@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "543584263362",
+    "project_id": "butu1on-dictionary-app",
+    "storage_bucket": "butu1on-dictionary-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:543584263362:android:71ced19a728f5147956f5b",
+        "android_client_info": {
+          "package_name": "com.example.butu1on_dictionary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "543584263362-p587ppppmfjjeag8f19nipjla7aef212.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC71AIqBew-lKXx894POZ9F4DCEmUmm_Ws"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "543584263362-p587ppppmfjjeag8f19nipjla7aef212.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
