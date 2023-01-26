@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:butu1on_dictionary/components/searchBar.dart';
-import 'package:butu1on_dictionary/provider/bookmarkProvider.dart';
+import 'package:butu1on_dictionary/provider/btwProvider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:butu1on_dictionary/screens/NavBar.dart';
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => BookmarkProvider(),
+      create: (context) => BtwProvider(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Butu1on App',

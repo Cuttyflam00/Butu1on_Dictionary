@@ -1,4 +1,4 @@
-import 'package:butu1on_dictionary/provider/bookmarkProvider.dart';
+import 'package:butu1on_dictionary/provider/btwProvider.dart';
 import 'package:butu1on_dictionary/screens/admin/butuanonWord.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,8 +8,8 @@ class BookmarksPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<BookmarkProvider>(context);
-    final butuanonWords = provider.butuanonWords;
+    final provider = Provider.of<BtwProvider>(context);
+    final butuanonWords = provider.bookmarkButuanonWords;
     return Scaffold(
         appBar: AppBar(
           title: const Text('Bookmarks'),

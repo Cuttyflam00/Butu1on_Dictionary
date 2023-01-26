@@ -1,10 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../btw_wordModel.dart';
 import '../../components/searchBar.dart';
-import '../../provider/bookmarkProvider.dart';
+import '../../provider/btwProvider.dart';
 import '../../utils/reusable_widget.dart';
 
 class ButuanonWord extends StatefulWidget {
@@ -18,7 +17,11 @@ class ButuanonWord extends StatefulWidget {
 class _ButuanonWordState extends State<ButuanonWord> {
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<BookmarkProvider>(context);
+    final provider = Provider.of<BtwProvider>(context);
+
+    //add to recent
+     provider.toggleRecent(widget.displayWord);
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,

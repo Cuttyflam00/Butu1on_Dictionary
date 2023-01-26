@@ -1,6 +1,6 @@
 
 import 'package:avatar_glow/avatar_glow.dart';
-import 'package:butu1on_dictionary/provider/bookmarkProvider.dart';
+import 'package:butu1on_dictionary/provider/btwProvider.dart';
 import 'package:butu1on_dictionary/utils/reusable_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +12,6 @@ import '../screens/admin/butuanonWord.dart';
 
 class BtwSearchDelegate extends SearchDelegate {
   SpeechToText speechToText = SpeechToText();
-// dynamic getbutuanon;
   var isListening = false;
 
   @override
@@ -162,7 +161,7 @@ class BtwSearchDelegate extends SearchDelegate {
                               alignment: Alignment.centerLeft),
                           onPressed: () {
                             query = butuanon[index].btwWord;
-                            // getbutuanon = butuanon[index];
+                          
                              Navigator.push(
                             context,
                             MaterialPageRoute(
