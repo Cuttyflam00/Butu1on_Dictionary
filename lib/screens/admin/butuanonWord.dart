@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../btw_wordModel.dart';
 import '../../components/searchBar.dart';
-import '../../provider/btwProvider.dart';
+import '../../provider/bookmarkProvider.dart';
 import '../../utils/reusable_widget.dart';
 
 class ButuanonWord extends StatefulWidget {
@@ -17,10 +17,7 @@ class ButuanonWord extends StatefulWidget {
 class _ButuanonWordState extends State<ButuanonWord> {
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<BtwProvider>(context);
-
-    //add to recent
-     provider.toggleRecent(widget.displayWord);
+    final bprovider = Provider.of<BookmarkProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -29,10 +26,8 @@ class _ButuanonWordState extends State<ButuanonWord> {
         actions: [
           IconButton(
             onPressed: () {
-              showSearch(
-                context: context,
-                delegate: BtwSearchDelegate(),
-              );
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SearchBar()));
             },
             icon: const Icon(Icons.search),
           )
@@ -86,9 +81,9 @@ class _ButuanonWordState extends State<ButuanonWord> {
                           ),
                           InkWell(
                               onTap: () {
-                                provider.toggleBookmark(widget.displayWord);
+                                bprovider.toggleBookmark(widget.displayWord);
                               },
-                              child: provider.isExist(widget.displayWord)
+                              child: bprovider.isExist(widget.displayWord)
                                   ? const Icon(
                                       Icons.bookmark_added_rounded,
                                       size: 25,

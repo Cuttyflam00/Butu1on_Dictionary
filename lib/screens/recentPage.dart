@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../provider/btwProvider.dart';
+import '../provider/recentProvider.dart';
 import 'admin/butuanonWord.dart';
 
 class RecentPage extends StatelessWidget {
@@ -10,7 +10,7 @@ class RecentPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<BtwProvider>(context);
+    final provider = Provider.of<RecentProvider>(context);
     final butuanonWords = provider.recentButuanonWords;
 
     return Scaffold(
@@ -38,6 +38,7 @@ class RecentPage extends StatelessWidget {
                   ),
                   trailing:  Icon(Icons.arrow_forward),
               );
-            }));
+            })
+            );
   }
 }

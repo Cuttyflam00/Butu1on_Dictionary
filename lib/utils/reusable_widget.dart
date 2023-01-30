@@ -120,10 +120,11 @@ Widget signupLoginBtn(BuildContext context, bool islogin, Function onTap) {
 
 Widget formInputField(
     {required String hintText,
-    TextInputType textInputType = TextInputType.name, required TextEditingController controller}) {
+    TextInputType textInputType = TextInputType.name, required TextEditingController controller,FocusNode? focusNode}) {
   return Padding(
     padding: const EdgeInsets.all(10.0),
     child: TextField(
+      focusNode: focusNode,
       textInputAction: TextInputAction.next,
       controller: controller,
       keyboardType: textInputType,
