@@ -1,59 +1,27 @@
 import 'dart:developer';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 import '../btw_wordModel.dart';
 
 class BookmarkProvider extends ChangeNotifier {
+  final _reference = FirebaseFirestore.instance.collection('bookmark');
 
-  final List<Butuanon> _bookmarkbtwWords = [];
 
-  //
-  //BookMark
-  //
-
-  List<Butuanon> get bookmarkButuanonWords => _bookmarkbtwWords;
   void toggleBookmark(Butuanon butuanon) {
-    var isExist = false;
+    var isExist = _reference.doc(butuanon.btwId);
 
-    for (int i = 0; i < bookmarkButuanonWords.length; i++) {
-      if (bookmarkButuanonWords[i]
-          .btwWord
-          .toString()
-          .toLowerCase()
-          .contains(butuanon.btwWord.toString().toLowerCase())) {
-        isExist = true;
-         _bookmarkbtwWords.removeAt(i);
-        break;
-      }else{
-        isExist = false;
+    isExist.get().then((doc) async {
+      if (doc.exists) {
+       await _reference.doc(butuanon.btwId).delete();
+        log('remove');
+      } else {
+        final addtoBookmark = _reference.doc(butuanon.btwId);
+       await addtoBookmark.set(butuanon.toJson()).whenComplete(() {
+          log('add');
+        });
       }
-    }
-    if (isExist == true) {
-      _bookmarkbtwWords.remove(butuanon);
-      log('remove');
-    } else {
-      _bookmarkbtwWords.add(butuanon);
-      log('add');
-    }
+    });
     notifyListeners();
-  }
+  } 
 
-  bool isExist(Butuanon butuanon) {
-   var isExist = false;
-
-    for (int i = 0; i < bookmarkButuanonWords.length; i++) {
-      if (bookmarkButuanonWords[i]
-          .btwWord
-          .toString()
-          .toLowerCase()
-          .contains(butuanon.btwWord.toString().toLowerCase())) {
-        isExist = true;
-        break;
-      }else{
-        isExist = false;
-      }
-    }
-    return isExist;
-  }
 }

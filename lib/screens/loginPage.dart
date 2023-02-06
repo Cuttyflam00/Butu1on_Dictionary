@@ -1,14 +1,12 @@
 // ignore_for_file: file_names, prefer_const_constructors, use_build_context_synchronously
 // import 'package:google_fonts/google_fonts.dart';
 import 'package:butu1on_dictionary/screens/auth_page.dart';
-import 'package:butu1on_dictionary/screens/signupPage.dart';
+// import 'package:butu1on_dictionary/screens/signupPage.dart';
 import 'package:butu1on_dictionary/utils/reusable_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-
-import '../main.dart';
+import 'homePage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -114,10 +112,6 @@ class _LoginPageState extends State<LoginPage> {
                               builder: (context) => AuthPage()));
                         } on FirebaseAuthException catch (error) {
                            Navigator.of(context).pop();
-                          Fluttertoast.showToast(
-                              msg: error.message.toString(),
-                              backgroundColor: Colors.black45,
-                              gravity: ToastGravity.TOP);
                         }
                       }),
                       // Row(

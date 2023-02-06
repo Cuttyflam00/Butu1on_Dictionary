@@ -4,13 +4,31 @@ Butuanon butuanonFromJson(String str) => Butuanon.fromJson(json.decode(str));
 
 String butuanonToJson(Butuanon data) => json.encode(data.toJson());
 
+
 class Butuanon {
+ 
+  String? btwId = '';
+  final String btwWord;
+  final String partOfSpeech;
+  final String ipa;
+  String? audio;
+  final String transEnglish;
+  final String transTagalog;
+  final String difinition;
+  final String engSentences;
+  final String tagSentences;
+  final String btwSentences;
+  final String synEnglish;
+  final String synTagalog;
+  final String antEnglish;
+  final String antTagalog;
+
   Butuanon({
     this.btwId,
     required this.btwWord,
     required this.partOfSpeech,
     required this.ipa,
-    required this.audio,
+    this.audio,
     required this.transEnglish,
     required this.transTagalog,
     required this.difinition,
@@ -22,22 +40,6 @@ class Butuanon {
     required this.antEnglish,
     required this.antTagalog,
   });
-
-  String? btwId = '';
-  final String btwWord;
-  final String partOfSpeech;
-  final String ipa;
-  final String audio;
-  final String transEnglish;
-  final String transTagalog;
-  final String difinition;
-  final String engSentences;
-  final String tagSentences;
-  final String btwSentences;
-  final String synEnglish;
-  final String synTagalog;
-  final String antEnglish;
-  final String antTagalog;
 
   static Butuanon fromJson(Map<String, dynamic> json) => Butuanon(
       btwId: json['btwId'],

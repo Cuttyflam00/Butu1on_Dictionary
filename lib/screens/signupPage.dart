@@ -4,8 +4,6 @@ import 'package:butu1on_dictionary/screens/admin/adminPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-
 import '../utils/reusable_widget.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -85,18 +83,13 @@ class _LoginPageState extends State<SignUpPage> {
                                   password: _passwordTextController.text);
                           Navigator.of(context)
                               .push(MaterialPageRoute(
-                                  builder: (context) => AdminPage()))
-                              .then((value) {
-                            Fluttertoast.showToast(
-                                msg: 'Sign Up Successfully',
-                                backgroundColor: Colors.black45,
-                                gravity: ToastGravity.TOP);
-                          });
+                                  builder: (context) => AdminPage()));
                         } on FirebaseAuthException catch (error) {
-                          Fluttertoast.showToast(
-                              msg: error.message.toString(),
-                              backgroundColor: Colors.black45,
-                              gravity: ToastGravity.TOP);
+                           ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(error.message.toString()),
+                            )
+                          );
                         }
                       }),
                     ],

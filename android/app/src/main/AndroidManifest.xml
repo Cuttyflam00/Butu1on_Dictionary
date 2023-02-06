@@ -2,6 +2,7 @@
     package="com.example.butu1on_dictionary">
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+  
    <application
         android:label="Butu1on Dictionary"
         android:name="${applicationName}"

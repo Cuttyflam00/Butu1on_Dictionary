@@ -1,7 +1,9 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-
 import '../../btw_wordModel.dart';
 import '../../utils/reusable_widget.dart';
 import 'adminPage.dart';
@@ -14,38 +16,67 @@ class AddForm extends StatefulWidget {
 }
 
 class _AddFormState extends State<AddForm> {
-
   final butuanonWordController = TextEditingController();
-
   final partOfSpeechController = TextEditingController();
-
   final ipaController = TextEditingController();
-
   final audioController = TextEditingController();
-
   final transEnglishController = TextEditingController();
-
   final transTagalogController = TextEditingController();
-
   final difinitionController = TextEditingController();
-
   final engSentencesController = TextEditingController();
   final tagSentencesController = TextEditingController();
   final btwSentencesController = TextEditingController();
-
   final synEnglishController = TextEditingController();
-
   final synTagalogController = TextEditingController();
-
   final antEnglishController = TextEditingController();
-
   final antTagalogController = TextEditingController();
   final FocusNode focusNode = FocusNode();
   final _reference = FirebaseFirestore.instance.collection('butuanonWords');
 
+  var rev = false;
+  var text = false;
+
+  PlatformFile? audioFile;
+  UploadTask? uploadTask;
+  String? url;
+
+  Future _selectAudio() async {
+    FilePickerResult? audio = await FilePicker.platform.pickFiles(type: FileType.audio);
+    if (audio == null) return;
+    // ignore: unnecessary_null_comparison
+    if (audio != null) {
+      setState(() {
+        audioFile = audio.files.first;
+        text = true;
+        print('here');
+      });
+    } else {
+      text = false;
+    }
+  }
+
+  Future uploadAudio() async {
+    final filePath = 'audios/${audioFile!.name}.mp3';
+    final file = File(audioFile!.path!);
+    final ref = FirebaseStorage.instance.ref().child(filePath);
+
+    uploadTask = ref.putFile(file);
+    final snapshot = await uploadTask?.whenComplete(() {});
+    final urlGet = await snapshot!.ref.getDownloadURL();
+    setState(() {
+      url = urlGet;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    focusNode.requestFocus;
+    difinitionController.addListener(
+      () {
+        setState(() {
+          rev = true;
+        });
+      },
+    );
     return makeDismissible(
       context,
       child: GestureDetector(
@@ -54,15 +85,15 @@ class _AddFormState extends State<AddForm> {
           maxChildSize: 0.9,
           minChildSize: 0.4,
           builder: (_, controller) => Container(
-            // height: double.infinity,
+            height: MediaQuery.of(context).size.height,
             decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             child: SingleChildScrollView(
-                reverse: true,
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
+                reverse: rev,
+                // keyboardDismissBehavior:
+                //     ScrollViewKeyboardDismissBehavior.onDrag,
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   children: [
@@ -77,18 +108,53 @@ class _AddFormState extends State<AddForm> {
                     const SizedBox(
                       height: 10,
                     ),
-                      formInputField(
-                        focusNode: focusNode,
-                          hintText: 'Butuanon Word',
-                          controller: butuanonWordController),
+                    formInputField(
+                        hintText: 'Butuanon Word',
+                        controller: butuanonWordController),
                     formInputField(
                         hintText: 'Part of Speech',
                         controller: partOfSpeechController),
-                    formInputField(hintText: 'IPA', controller: ipaController),
-                    formInputField(
-                        hintText: 'Audio',
-                        textInputType: TextInputType.url,
-                        controller: audioController),
+                    GestureDetector(
+                        child: formInputField(
+                            hintText: 'IPA', controller: ipaController)),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: const Text(
+                            'Audio :',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xffFD7F2C)),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            margin: EdgeInsets.only(left: 10, right: 10),
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: themeColor),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                text
+                                    ? Text('${audioFile!.name.toString()}')
+                                    : Text('Select Audio...'),
+                                IconButton(
+                                    onPressed: () => _selectAudio(),
+                                    icon: Icon(
+                                      Icons.add_circle,
+                                      color: themeColor,
+                                    ))
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     formInputField(
                         hintText: 'Difinition',
                         controller: difinitionController),
@@ -154,7 +220,12 @@ class _AddFormState extends State<AddForm> {
                                 borderRadius: BorderRadius.circular(20),
                               )),
                             ),
-                            onPressed: () {
+                            onPressed: () async {
+                              if(audioFile!=null){
+                                 await uploadAudio();
+                              }
+                    
+                              audioController.text = url.toString();
                               Butuanon butuanonWord = Butuanon(
                                   btwWord: butuanonWordController.text,
                                   partOfSpeech: partOfSpeechController.text,

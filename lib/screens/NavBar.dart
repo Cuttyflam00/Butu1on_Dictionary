@@ -1,9 +1,9 @@
 // ignore_for_file: file_names, prefer_const_constructors
 import 'package:flutter/material.dart';
-import 'package:butu1on_dictionary/main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'aboutUsPage.dart';
 import 'bookmarksPage.dart';
+import 'homePage.dart';
 import 'recentPage.dart';
 import 'loginPage.dart';
 

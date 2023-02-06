@@ -32,29 +32,27 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   google_fonts: ^3.0.1
   firebase_core: ^2.4.0
   firebase_auth: ^4.2.1
-  fluttertoast: ^8.1.2
+  firebase_storage: ^11.0.10
   cloud_firestore: ^4.3.1
 
   avatar_glow: ^2.0.2
   speech_to_text: ^6.1.1
   provider: ^6.0.5
-
-  
-
+  file_picker: ^5.2.5
+  audioplayers: ^3.0.1
+ 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-# dependency_overrides:
-#   image: ^4.0.10
+
   flutter_native_splash: ^2.2.11
   flutter_launcher_icons: ^0.11.0
 
@@ -62,12 +60,12 @@ dev_dependencies:
 flutter_native_splash:
   image: assets/splash_logo.png
   color: "#ffffff"
-  # adaptive_icon_background: "#ffffff"
-  # adaptive_icon_foreground: "assets/adaptive_fore.png"
 
 flutter_icons:
   android: true
   image_path: "assets/splash_logo.png"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/splash_logo.png"
 
 
   # The "flutter_lints" package below contains a set of recommended lints to

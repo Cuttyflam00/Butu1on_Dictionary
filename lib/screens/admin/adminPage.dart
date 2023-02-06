@@ -21,7 +21,6 @@ class AdminPage extends StatefulWidget {
 
 class _AdminPageState extends State<AdminPage> {
  
-  // final db = FirebaseFirestore.instance;
   final _reference = FirebaseFirestore.instance.collection('butuanonWords');
 
   @override
