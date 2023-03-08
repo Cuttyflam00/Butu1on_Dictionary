@@ -1,8 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-// import 'package:music/music.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../btw_wordModel.dart';
 import '../../components/searchBar.dart';
 import '../../provider/bookmarkProvider.dart';
@@ -17,33 +16,32 @@ class ButuanonWord extends StatefulWidget {
 }
 
 class _ButuanonWordState extends State<ButuanonWord> {
-  final _reference = FirebaseFirestore.instance.collection('bookmark');
   final audioPlayer = AudioPlayer();
   bool _isPlaying = false;
-  bool bIcon = false;
+  bool bmark = false;
 
   @override
   void initState() {
     super.initState();
-    checkIcon();
+    checkIcon(widget.displayWord);
     if (widget.displayWord.audio != "null") {
       setSrc();
     }
   }
 
-  checkIcon() async {
-    var isExist = _reference.doc(widget.displayWord.btwId);
-    isExist.get().then((doc) {
-      if (doc.exists) {
-        setState(() {
-          bIcon = true;
-        });
-      } else {
-        setState(() {
-          bIcon = false;
-        });
-      }
-    });
+  Future<bool> checkIcon(Butuanon butuanon) async {
+    final _prefs = await SharedPreferences.getInstance();
+    final getbmark = _prefs.getString(butuanon.btwId.toString());
+    if (getbmark != null) {
+      setState(() {
+        bmark = true;
+      });
+    } else {
+      setState(() {
+        bmark = false;
+      });
+    }
+    return bmark;
   }
 
   setSrc() async {
@@ -54,7 +52,7 @@ class _ButuanonWordState extends State<ButuanonWord> {
 
   void dispose() {
     audioPlayer.dispose();
-    bIcon;
+    bmark;
     super.dispose();
   }
 
@@ -71,7 +69,7 @@ class _ButuanonWordState extends State<ButuanonWord> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text(widget.displayWord.btwWord),
+          title: Text(widget.displayWord.srchBtwWord),
           actions: [
             IconButton(
               onPressed: () {
@@ -153,21 +151,32 @@ class _ButuanonWordState extends State<ButuanonWord> {
                             InkWell(
                                 onTap: () async {
                                   bprovider.toggleBookmark(widget.displayWord);
-                                  // await checkIcon();
-                                  var isExist = await _reference
-                                      .doc(widget.displayWord.btwId)
-                                      .get();
-                                  if (isExist.exists) {
-                                    setState(() {
-                                      bIcon = false;
-                                    });
+                                  bmark = await checkIcon(widget.displayWord);
+                                  ScaffoldMessenger.of(context)
+                                      .clearSnackBars();
+                                  if (bmark) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(
+                                        'Added to Bookmark',
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      backgroundColor: themeColor,
+                                    ));
                                   } else {
-                                    setState(() {
-                                      bIcon = true;
-                                    });
+                                    ScaffoldMessenger.of(context)
+                                        .clearSnackBars();
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(
+                                         'Remove from Bookmark',
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      backgroundColor: Colors.blue,
+                                    ));
                                   }
                                 },
-                                child: bIcon
+                                child: bmark
                                     ? const Icon(
                                         Icons.bookmark_added_rounded,
                                         size: 25,

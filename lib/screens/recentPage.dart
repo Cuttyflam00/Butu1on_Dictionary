@@ -1,69 +1,81 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../btw_wordModel.dart';
+import '../provider/recentProvider.dart';
 import 'admin/butuanonWord.dart';
 
 class RecentPage extends StatelessWidget {
   const RecentPage({super.key});
 
+
+
   @override
   Widget build(BuildContext context) {
-    final _reference = FirebaseFirestore.instance.collection('recent');
+    final rprovider = Provider.of<RecentProvider>(context);
+  
     return Scaffold(
         appBar: AppBar(title: const Text('Recent')),
-        body: StreamBuilder<QuerySnapshot>(
-            stream: _reference.snapshots(),
-            builder: (context, snapshot) {
-              return (snapshot.connectionState == ConnectionState.waiting)
-                  ? Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : ListView.builder(
-                      itemCount: snapshot.data!.docs.length,
-                      itemBuilder: (context, index) {
-                        QuerySnapshot querySnapshot = snapshot.data!;
-                        List<QueryDocumentSnapshot> documents =
-                            querySnapshot.docs;
+        body: FutureBuilder(
+          future: rprovider.getAllValues(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final values = snapshot.data as Map<String, dynamic>;
+              
+              return ListView.builder(
+                reverse: true,
+                shrinkWrap: true,
+                  itemCount: values.length,
+                  itemBuilder: (context, index) {
+                    final key = values.keys.toList()[index];
+                    // final value = values[key];
+                    final decodeVal = json.decode(key);
+                    Butuanon butuanon = Butuanon(
+                        btwId: decodeVal['btwId'],
+                        btwWord: decodeVal['btwWord'],
+                        srchBtwWord: decodeVal['srchBtwWord'],
+                        partOfSpeech: decodeVal['partOfSpeech'],
+                        ipa: decodeVal['ipa'],
+                        audio: decodeVal['audio'],
+                        transEnglish: decodeVal['transEnglish'],
+                        transTagalog: decodeVal['transTagalog'],
+                        difinition: decodeVal['difinition'],
+                        engSentences: decodeVal['engSentences'],
+                        tagSentences: decodeVal['tagSentences'],
+                        btwSentences: decodeVal['btwSentences'],
+                        synEnglish: decodeVal['synEnglish'],
+                        synTagalog: decodeVal['synTagalog'],
+                        antEnglish: decodeVal['antEnglish'],
+                        antTagalog: decodeVal['antTagalog']);
 
-                        List<Butuanon> butuanon = documents
-                            .map((e) => Butuanon(
-                                btwId: e['btwId'],
-                                btwWord: e['btwWord'],
-                                partOfSpeech: e['partOfSpeech'],
-                                ipa: e['ipa'],
-                                audio: e['audio'],
-                                transEnglish: e['transEnglish'],
-                                transTagalog: e['transTagalog'],
-                                difinition: e['difinition'],
-                                engSentences: e['engSentences'],
-                                tagSentences: e['tagSentences'],
-                                btwSentences: e['btwSentences'],
-                                synEnglish: e['synEnglish'],
-                                synTagalog: e['synTagalog'],
-                                antEnglish: e['antEnglish'],
-                                antTagalog: e['antTagalog']))
-                            .toList();
-                        return ListTile(
-                          leading: Icon(Icons.youtube_searched_for),
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ButuanonWord(
-                                          displayWord: butuanon[index],
-                                        )));
-                          },
-                          title: Text(
-                            butuanon[index].btwWord,
-                            style: const TextStyle(
-                                color: Colors.black54,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          trailing: Icon(Icons.arrow_forward),
-                        );
-                      });
-            }));
+                    return ListTile(
+                      leading: Icon(Icons.youtube_searched_for),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ButuanonWord(
+                                      displayWord: butuanon,
+                                    )));
+                      },
+                      title: Text(
+                        butuanon.srchBtwWord,
+                        // decodeVal['srchBtwWord'],
+                        style: const TextStyle(
+                            color: Colors.black54, fontWeight: FontWeight.bold),
+                      ),
+                      trailing: Icon(Icons.arrow_forward),
+                    );
+                  });
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
+          },
+        ));
   }
 }

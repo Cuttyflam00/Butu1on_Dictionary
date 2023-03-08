@@ -17,14 +17,22 @@ class SearchBar extends StatefulWidget {
 }
 
 class _SearchBarState extends State<SearchBar> {
-  final _reference = FirebaseFirestore.instance.collection('butuanonWords');
+  final _ref = FirebaseFirestore.instance.collection('butuanonWords');
   final searchController = TextEditingController();
   SpeechToText speechToText = SpeechToText();
+
+   @override
+  void dispose() {
+    super.dispose();
+    speechToText.stop();
+  }
+
   String query = '';
   var isListening = false;
 
   @override
   Widget build(BuildContext context) {
+     final _reference = _ref.orderBy("srchBtwWord");
     final rprovider = Provider.of<RecentProvider>(context);
     return Scaffold(
       appBar: AppBar(
@@ -145,6 +153,7 @@ class _SearchBarState extends State<SearchBar> {
                             .map((e) => Butuanon(
                                 btwId: e['btwId'],
                                 btwWord: e['btwWord'],
+                                srchBtwWord: e['srchBtwWord'],
                                 partOfSpeech: e['partOfSpeech'],
                                 ipa: e['ipa'],
                                 audio: e['audio'],
@@ -176,7 +185,7 @@ class _SearchBarState extends State<SearchBar> {
                 
                               },
                               child: Text(
-                                butuanon[index].btwWord,
+                                butuanon[index].srchBtwWord,
                                 style: const TextStyle(
                                     color: Colors.black54,
                                     fontWeight: FontWeight.bold),
@@ -205,7 +214,7 @@ class _SearchBarState extends State<SearchBar> {
                                             )));
                               },
                               child: Text(
-                                butuanon[index].btwWord,
+                                butuanon[index].srchBtwWord,
                                 style: const TextStyle(
                                     color: Colors.black54,
                                     fontWeight: FontWeight.bold),

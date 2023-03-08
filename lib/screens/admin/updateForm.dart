@@ -18,6 +18,7 @@ class UpdateForm extends StatefulWidget {
 
 class _UpdateFormState extends State<UpdateForm> {
   final butuanonWordController = TextEditingController();
+  final searchableWordController = TextEditingController();
   final partOfSpeechController = TextEditingController();
   final ipaController = TextEditingController();
   final audioController = TextEditingController();
@@ -79,6 +80,7 @@ class _UpdateFormState extends State<UpdateForm> {
       },
     );
     butuanonWordController.text = widget.butuanonWord.btwWord;
+    searchableWordController.text = widget.butuanonWord.srchBtwWord;
     partOfSpeechController.text = widget.butuanonWord.partOfSpeech;
     ipaController.text = widget.butuanonWord.ipa;
     audioController.text = widget.butuanonWord.audio.toString();
@@ -125,6 +127,9 @@ class _UpdateFormState extends State<UpdateForm> {
                   ),
                   formInputField(
                       hintText: 'Butuanon Word',
+                      controller: butuanonWordController),
+                  formInputField(
+                      hintText: 'Searchable Word',
                       controller: butuanonWordController),
                   formInputField(
                       hintText: 'Part of Speech',
@@ -246,6 +251,7 @@ class _UpdateFormState extends State<UpdateForm> {
                             Butuanon butuanon = Butuanon(
                                 btwId: widget.butuanonWord.btwId,
                                 btwWord: butuanonWordController.text,
+                                srchBtwWord: searchableWordController.text,
                                 partOfSpeech: partOfSpeechController.text,
                                 ipa: ipaController.text,
                                 audio: audioController.text,

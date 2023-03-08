@@ -17,6 +17,7 @@ class AddForm extends StatefulWidget {
 
 class _AddFormState extends State<AddForm> {
   final butuanonWordController = TextEditingController();
+  final searchableWordController = TextEditingController();
   final partOfSpeechController = TextEditingController();
   final ipaController = TextEditingController();
   final audioController = TextEditingController();
@@ -111,6 +112,9 @@ class _AddFormState extends State<AddForm> {
                     formInputField(
                         hintText: 'Butuanon Word',
                         controller: butuanonWordController),
+                    formInputField(
+                        hintText: 'Searchable Word',
+                        controller: searchableWordController),
                     formInputField(
                         hintText: 'Part of Speech',
                         controller: partOfSpeechController),
@@ -228,6 +232,7 @@ class _AddFormState extends State<AddForm> {
                               audioController.text = url.toString();
                               Butuanon butuanonWord = Butuanon(
                                   btwWord: butuanonWordController.text,
+                                  srchBtwWord: searchableWordController.text,
                                   partOfSpeech: partOfSpeechController.text,
                                   ipa: ipaController.text,
                                   audio: audioController.text,

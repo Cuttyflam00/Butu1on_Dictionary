@@ -1,4 +1,3 @@
-
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:butu1on_dictionary/utils/reusable_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,19 +18,26 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   final _ref = FirebaseFirestore.instance.collection('butuanonWords');
 
   SpeechToText speechToText = SpeechToText();
+
+  @override
+  void dispose() {
+    super.dispose();
+    speechToText.stop();
+  }
+
   String query = '';
   var isListening = false;
   final searchController = TextEditingController();
   bool showBanner = true;
 
+ 
   @override
   Widget build(BuildContext context) {
     final rprovider = Provider.of<RecentProvider>(context);
-      final _reference = _ref.orderBy("btwWord");
+    final _reference = _ref.orderBy("srchBtwWord");
 
     return Scaffold(
       drawer: NavBar(),
@@ -149,101 +155,112 @@ class _HomePageState extends State<HomePage> {
             ),
             Expanded(
                 child: StreamBuilder<QuerySnapshot>(
-                        stream: _reference.snapshots(),
-                        builder: (context, snapshot) {
-                          return (snapshot.connectionState ==
-                                  ConnectionState.waiting)
-                              ? Center(
-                                  child: CircularProgressIndicator(),
-                                )
-                              : ListView.builder(
-                                  itemCount: snapshot.data!.docs.length,
-                                  itemBuilder: (context, index) {
-                                    QuerySnapshot querySnapshot =
-                                        snapshot.data!;
-                                    List<QueryDocumentSnapshot> documents =
-                                        querySnapshot.docs;
+              stream: _reference.snapshots(),
+              builder: (context, snapshot) {
+                return (snapshot.connectionState == ConnectionState.waiting)
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : ListView.builder(
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          QuerySnapshot querySnapshot = snapshot.data!;
+                          List<QueryDocumentSnapshot> documents =
+                              querySnapshot.docs;
 
-                                    List<Butuanon> butuanon = documents
-                                        .map((e) => Butuanon(
-                                            btwId: e['btwId'],
-                                            btwWord: e['btwWord'],
-                                            partOfSpeech: e['partOfSpeech'],
-                                            ipa: e['ipa'],
-                                            audio: e['audio'],
-                                            transEnglish: e['transEnglish'],
-                                            transTagalog: e['transTagalog'],
-                                            difinition: e['difinition'],
-                                            engSentences: e['engSentences'],
-                                            tagSentences: e['tagSentences'],
-                                            btwSentences: e['btwSentences'],
-                                            synEnglish: e['synEnglish'],
-                                            synTagalog: e['synTagalog'],
-                                            antEnglish: e['antEnglish'],
-                                            antTagalog: e['antTagalog']))
-                                        .toList();
+                          List<Butuanon> butuanon = documents
+                              .map((e) => Butuanon(
+                                  btwId: e['btwId'],
+                                  btwWord: e['btwWord'],
+                                  srchBtwWord: e['srchBtwWord'],
+                                  partOfSpeech: e['partOfSpeech'],
+                                  ipa: e['ipa'],
+                                  audio: e['audio'],
+                                  transEnglish: e['transEnglish'],
+                                  transTagalog: e['transTagalog'],
+                                  difinition: e['difinition'],
+                                  engSentences: e['engSentences'],
+                                  tagSentences: e['tagSentences'],
+                                  btwSentences: e['btwSentences'],
+                                  synEnglish: e['synEnglish'],
+                                  synTagalog: e['synTagalog'],
+                                  antEnglish: e['antEnglish'],
+                                  antTagalog: e['antTagalog']))
+                              .toList();
 
-                                    if (query.isEmpty) {
-                                      return ListTile(
-                                        leading: TextButton(
-                                          style: ButtonStyle(
-                                              alignment: Alignment.centerLeft),
-                                          onPressed: () async {
-                                            rprovider
-                                                .toggleRecent(butuanon[index]);
+                          if (query.isEmpty) {
+                            return ListTile(
+                              leading: TextButton(
+                                style: ButtonStyle(
+                                    alignment: Alignment.centerLeft),
+                                onPressed: () {
+                                  try {
+                                    rprovider.toggleRecent(butuanon[index]);
 
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        ButuanonWord(
-                                                          displayWord:
-                                                              butuanon[index],
-                                                        )));
-                                          },
-                                          child: Text(
-                                            butuanon[index].btwWord,
-                                            style: TextStyle(
-                                                color: Colors.black54,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                    if (butuanon[index]
-                                        .btwWord
-                                        .toString()
-                                        .toLowerCase()
-                                        .startsWith(query.toLowerCase())) {
-                                      return ListTile(
-                                        leading: TextButton(
-                                          style: ButtonStyle(
-                                              alignment: Alignment.centerLeft),
-                                          onPressed: () {
-                                             rprovider
-                                                .toggleRecent(butuanon[index]);
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        ButuanonWord(
-                                                          displayWord:
-                                                              butuanon[index],
-                                                        )));
-                                          },
-                                          child: Text(
-                                            butuanon[index].btwWord,
-                                            style: TextStyle(
-                                                color: Colors.black54,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                    return Container();
-                                  });
-                        },
-                      )),
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ButuanonWord(
+                                                  displayWord: butuanon[index],
+                                                )));
+                                  } on FirebaseException catch (e) {
+                                    Navigator.of(context).pop();
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(e.message.toString()),
+                                    ));
+                                  }
+                                },
+                                child: Text(
+                                  butuanon[index].srchBtwWord,
+                                  style: TextStyle(
+                                      color: Colors.black54,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            );
+                          }
+                          if (butuanon[index]
+                                  .srchBtwWord
+                                  .toString()
+                                  .toLowerCase()
+                                  .startsWith(query.toLowerCase()) ||
+                              butuanon[index]
+                                  .transEnglish
+                                  .toString()
+                                  .toLowerCase()
+                                  .startsWith(query.toLowerCase()) ||
+                              butuanon[index]
+                                  .transTagalog
+                                  .toString()
+                                  .toLowerCase()
+                                  .startsWith(query.toLowerCase())) {
+                            return ListTile(
+                              leading: TextButton(
+                                style: ButtonStyle(
+                                    alignment: Alignment.centerLeft),
+                                onPressed: () {
+                                  rprovider.toggleRecent(butuanon[index]);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ButuanonWord(
+                                                displayWord: butuanon[index],
+                                              )));
+                                },
+                                child: Text(
+                                  butuanon[index].srchBtwWord,
+                                  style: TextStyle(
+                                      color: Colors.black54,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            );
+                          }
+                          return Container();
+                        });
+              },
+            )),
           ],
         ),
       ),

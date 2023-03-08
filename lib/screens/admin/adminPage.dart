@@ -21,10 +21,11 @@ class AdminPage extends StatefulWidget {
 
 class _AdminPageState extends State<AdminPage> {
  
-  final _reference = FirebaseFirestore.instance.collection('butuanonWords');
+  final _ref = FirebaseFirestore.instance.collection('butuanonWords');
 
   @override
   Widget build(BuildContext context) {
+    final _reference = _ref.orderBy('srchBtwWord');
     return Scaffold(
       // drawer: Drawer(
       //   child: SingleChildScrollView(
@@ -72,6 +73,7 @@ class _AdminPageState extends State<AdminPage> {
                 .map((e) => Butuanon(
                     btwId: e['btwId'],
                     btwWord: e['btwWord'],
+                    srchBtwWord: e['srchBtwWord'],
                     partOfSpeech: e['partOfSpeech'],
                     ipa: e['ipa'],
                     audio: e['audio'],
@@ -186,7 +188,7 @@ class _AdminPageState extends State<AdminPage> {
                                     )));
                       },
                       child: Text(
-                        butuanon[index].btwWord,
+                        butuanon[index].srchBtwWord,
                         style: TextStyle(
                             color: Colors.black54, fontWeight: FontWeight.bold),
                       ),
@@ -220,7 +222,7 @@ class _AdminPageState extends State<AdminPage> {
                               ),
                               onTap: () {
                                 log('delete');
-                                _reference.doc(butuanon[index].btwId).delete();
+                                _ref.doc(butuanon[index].btwId).delete();
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(

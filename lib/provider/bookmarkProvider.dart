@@ -1,27 +1,35 @@
+import 'dart:convert';
 import 'dart:developer';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../btw_wordModel.dart';
 
 class BookmarkProvider extends ChangeNotifier {
-  final _reference = FirebaseFirestore.instance.collection('bookmark');
 
+  Future<void> toggleBookmark(Butuanon butuanon) async {
+    final prefs = await SharedPreferences.getInstance();
 
-  void toggleBookmark(Butuanon butuanon) {
-    var isExist = _reference.doc(butuanon.btwId);
-
-    isExist.get().then((doc) async {
-      if (doc.exists) {
-       await _reference.doc(butuanon.btwId).delete();
-        log('remove');
-      } else {
-        final addtoBookmark = _reference.doc(butuanon.btwId);
-       await addtoBookmark.set(butuanon.toJson()).whenComplete(() {
-          log('add');
-        });
-      }
-    });
+    final jsonString = prefs.getString(butuanon.btwId.toString());
+    if (jsonString != null) {
+      await prefs.remove(butuanon.btwId.toString());
+      log('remove to bookmark');
+    } else {
+      await prefs.setString(butuanon.btwId.toString(), json.encode(butuanon));
+      log('add to boookmark');
+    }
     notifyListeners();
-  } 
+  }
 
+  Future<Map<String, dynamic>> getAllBookmarkValues() async {
+    final prefs = await SharedPreferences.getInstance();
+    final getvalues = prefs.getKeys();
+    final values = <String, dynamic>{};
+    final keys = getvalues.where((element) => element != 'recentList');
+
+    for (final key in keys) {
+      final value = prefs.get(key);
+      values[key] = value;
+    }
+    return values;
+  }
 }

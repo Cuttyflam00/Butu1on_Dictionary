@@ -112,6 +112,11 @@ class _LoginPageState extends State<LoginPage> {
                               builder: (context) => AuthPage()));
                         } on FirebaseAuthException catch (error) {
                            Navigator.of(context).pop();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(error.message.toString()),
+                            )
+                          );
                         }
                       }),
                       // Row(

@@ -9,6 +9,7 @@ class Butuanon {
  
   String? btwId = '';
   final String btwWord;
+  final String srchBtwWord;
   final String partOfSpeech;
   final String ipa;
   String? audio;
@@ -26,6 +27,7 @@ class Butuanon {
   Butuanon({
     this.btwId,
     required this.btwWord,
+    required this.srchBtwWord,
     required this.partOfSpeech,
     required this.ipa,
     this.audio,
@@ -44,6 +46,7 @@ class Butuanon {
   static Butuanon fromJson(Map<String, dynamic> json) => Butuanon(
       btwId: json['btwId'],
       btwWord: json['btwWord'],
+      srchBtwWord: json['srchBtwWord'],
       partOfSpeech: json['partOfSpeech'],
       ipa: json['ipa'],
       audio: json['audio'],
@@ -61,6 +64,7 @@ class Butuanon {
   Map<String, dynamic> toJson() => {
         "btwId": btwId,
         "btwWord": btwWord,
+        "srchBtwWord": srchBtwWord,
         "partOfSpeech": partOfSpeech,
         "ipa": ipa,
         "audio": audio,
